@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import FieldComponent from './FieldComponent'
 import ViewDesignedFormButton from './ViewDesignedFormButton'
-import DesignedForm from './DesignedForm'
+import DesignedForm from './DesignedForm';
+import './FormDesigner.css';
 
 const FormDesigner = () => {
   const [fields, setFields] = useState([])
@@ -44,91 +45,86 @@ const FormDesigner = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col justify-center items-center">
-      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
-        <h1 className="text-3xl font-semibold mb-8 text-center">
-          Form Designer
-        </h1>
-        <div className="mb-4">
-          <label
-            htmlFor="fieldType"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Field Type:
-          </label>
-          <select
-            id="fieldType"
-            value={newFieldType}
-            onChange={(e) => setNewFieldType(e.target.value)}
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="text">Text</option>
-            <option value="image">Image</option>
-            <option value="file">File Upload</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="question"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Question:
-          </label>
-          <input
-            type="text"
-            id="question"
-            value={newQuestion}
-            onChange={(e) => setNewQuestion(e.target.value)}
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="applicableTo"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Applicable To:
-          </label>
-          <select
-            id="applicableTo"
-            value={newApplicableTo}
-            onChange={(e) => setNewApplicableTo(e.target.value)}
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="student">Student</option>
-            <option value="employee">Employee</option>
-            <option value="both">Both</option>
-          </select>
-        </div>
-        <div className="flex justify-end mb-6">
-          <button
-            onClick={handleAddField}
-            className="bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700"
-          >
-            Add Field
-          </button>
-        </div>
-        <div>
-          {fields.map((field) => (
-            <FieldComponent
-              key={field.id}
-              field={field}
-              onDelete={handleDeleteField}
-            />
-          ))}
-        </div>
-        <div className="flex justify-between mt-8">
-          <button
-            onClick={handleApplyChanges}
-            className="bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700"
-          >
-            Apply Changes
-          </button>
-          <ViewDesignedFormButton />
+   
+      <div className="main-container bg-gray-50 min-h-screen flex flex-col">
+        <div className="flex-grow flex">    
+          <div className=" left flex-1 flex justify-center items-center px-4">
+            <div className="left-outer1  shadow-md rounded-lg p-2 w-full max-w-3xl">
+            <div className="left-outer2  shadow-md rounded-lg p-8 w-full max-w-3xl">
+                <h1 className="text-3xl font-semibold mb-8 text-center">
+                  Form Designer
+                </h1>
+                <div className="input-group mb-3">
+                 
+                  <label class="input-group-text" for="inputGroupSelect01">Field Type</label>
+                 
+                  <select class="form-select"value={newFieldType}
+                    onChange={(e) => setNewFieldType(e.target.value)} 
+                    id="inputGroupSelect01">
+                    <option value="text">Text</option>
+                    <option value="image">Image</option>
+                    <option value="file">File Upload</option>
+                  </select>
+                </div>
+                <div class="input-group mb-4">
+                  <span class="input-group-text">Question</span>
+                  <textarea class="form-control" id="question"  value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} aria-label="With textarea"></textarea>
+                </div>
+                
+                <div className="input-group mb-3">
+                   <label class="input-group-text" for="inputGroupSelect01"> Applicable To:</label>
+                  <select class="form-select" value={newApplicableTo}
+                   onChange={(e) => setNewApplicableTo(e.target.value)} 
+                    id="inputGroupSelect01">
+                    <option value="student">Student</option>
+                    <option value="employee">Employee</option>
+                    <option value="both">Both</option>
+                  </select>
+                </div>
+
+                <div className="d-grid gap-2 mb-7">
+                  <button
+                    onClick={handleAddField}
+                    className="btn btn-outline-success"
+                  >
+                    Add Field
+                  </button>
+                </div>
+                <div>
+                  {fields.map((field) => (
+                    <FieldComponent
+                      key={field.id}
+                      field={field}
+                      onDelete={handleDeleteField}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-between mt-8">
+                  <button
+                    onClick={handleApplyChanges}
+                    className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors duration-300"
+                  >
+                    Apply Changes
+                  </button>
+                  <ViewDesignedFormButton />
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          {/* Right side: View Page */}
+          <div className="flex-1 flex justify-center  px-4">
+            <div className="right shadow-md rounded-lg p-8 w-full max-w-3xl">
+              <DesignedForm fields={fields} className="mt-8" />
+            </div>
+          </div>
         </div>
       </div>
-      <DesignedForm fields={fields} className="mt-8" />
-    </div>
+
+     
+     
+  
   )
 }
 

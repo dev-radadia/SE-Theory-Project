@@ -1,12 +1,15 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ViewDesignedFormButton = () => {
+  // const navigate = useNavigate();
+
   const handleViewDesignedForm = () => {
-    console.log('View designed form')
-    // Code to navigate to the designed form page
-  }
+    console.log('View designed form');
+    // navigate('/designed-form');
+  };
 
-  return <button onClick={handleViewDesignedForm}>View Designed Form</button>
-}
+  return <button onClick={handleViewDesignedForm}>View Designed Form</button>;
+};
 
-export default ViewDesignedFormButton
+export default ViewDesignedFormButton;
