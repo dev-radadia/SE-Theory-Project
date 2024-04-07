@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import FieldComponent from './FieldComponent'
 import ViewDesignedFormButton from './ViewDesignedFormButton'
 import DesignedForm from './DesignedForm';
+import UserForm from './UserForm';
 import './FormDesigner.css';
 
 const FormDesigner = () => {
@@ -10,6 +12,30 @@ const FormDesigner = () => {
   const [newQuestion, setNewQuestion] = useState('')
   const [newOptions, setNewOptions] = useState('')
   const [newApplicableTo, setNewApplicableTo] = useState('student')
+
+
+
+  const handleApplyChanges = async () => {
+    try {
+      console.log("hello");
+      localStorage.setItem('formFields', JSON.stringify(fields));
+      console.log('Form data saved to local storage:', fields);
+      // const response = await fetch('./api/form-fields', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(fields), // Send the fields data to the backend
+      // })
+      // const data = await response.json()
+      // console.log('Response from backend:', data)
+      // localStorage.setItem('formFields', JSON.stringify(fields));
+      // console.log('Form data saved to local storage:', fields);
+      // Optionally, you can handle success or error responses here
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
 
   const handleAddField = () => {
     const newField = {
@@ -27,22 +53,7 @@ const FormDesigner = () => {
     setFields(updatedFields)
   }
 
-  const handleApplyChanges = async () => {
-    try {
-      const response = await fetch('./api/form-fields', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(fields), // Send the fields data to the backend
-      })
-      const data = await response.json()
-      console.log('Response from backend:', data)
-      // Optionally, you can handle success or error responses here
-    } catch (error) {
-      console.error('Error:', error)
-    }
-  }
+
 
   return (
    
@@ -106,7 +117,8 @@ const FormDesigner = () => {
                   >
                     Apply Changes
                   </button>
-                  <ViewDesignedFormButton />
+                  {/* <ViewDesignedFormButton /> */}
+                  <Link to="/view-designed-form">View Designed Form</Link>
                 </div>
               </div>
             </div>
