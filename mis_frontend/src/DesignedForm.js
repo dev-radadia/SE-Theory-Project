@@ -1,9 +1,11 @@
 import React from 'react'
+import './DesignedForm.css';
+
 
 const DesignedForm = ({ fields }) => {
   return (
     <div className="bg-gray-100 p-8 rounded-lg shadow-md">
-      <h1 className="text-2xl font-semibold mb-4">Designed Form</h1>
+      <h1 className="head text-2xl font-semibold mb-4">Designed Form</h1>
       <form className="space-y-4">
         {fields.map((field) => (
           <div key={field.id}>

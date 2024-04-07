@@ -68,7 +68,7 @@ const FormDesigner = () => {
                 </div>
                 <div class="input-group mb-4">
                   <span class="input-group-text">Question</span>
-                  <textarea class="form-control" id="question"  value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} aria-label="With textarea"></textarea>
+                  <textarea class="form-control" id="question"  value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} aria-label="With textarea" required></textarea>
                 </div>
                 
                 <div className="input-group mb-3">
