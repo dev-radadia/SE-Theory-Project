@@ -8,20 +8,23 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('tests', function (Blueprint $table) {
+        Schema::create('students_employees_data', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('tests');
+        Schema::dropIfExists('form_fields');
     }
 };
