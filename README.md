@@ -1,3 +1,3 @@
 Node modules are deleted in Frontend Folder
-First run ```j npm i ```
-Then run ```j npm start ```
+First run ```npm i ```
+Then run ```npm start ```
