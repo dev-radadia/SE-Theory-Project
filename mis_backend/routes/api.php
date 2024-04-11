@@ -17,6 +17,7 @@ use App\Http\Controllers\DataController;
 
 Route::post('receiveCols', [DataController::class, 'receiveCols']);
 Route::post('receiveData', [DataController::class, 'receiveData']);
+Route::get('sendCols', [DataController::class, 'sendCols']);
 
 Route::fallback(function () {
     return response()->json([

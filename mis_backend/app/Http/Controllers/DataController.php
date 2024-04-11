@@ -4,13 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+function addToAdministrator($col) {
+    $options = json_encode($col["options"]);
+
+    DB::connection()->getPdo()->exec(
+        "INSERT INTO administrator (question, type, options, applicable_to) VALUES (" . "'" . "{$col["question"]}" . "', '" . "{$col["type"]}" . "', '" . "{$options}" . "', '" . "{$col["applicable_to"]}" . "')"
+    );
+}
 
 function addToEmployee($col) {
-    $colName = str_replace(' ', '_', $col["question"]);
-
     if ($col["type"] == "text") {
         DB::connection()->getPdo()->exec(
-            "ALTER TABLE employee_data ADD {$colName} varchar(255)"
+            "ALTER TABLE employee_data ADD `{$col["question"]}` varchar(255)"
+        );
+    }
+    elseif ($col["type"] == "checkbox") {
+        DB::connection()->getPdo()->exec(
+            "ALTER TABLE employee_data ADD `{$col["question"]}` json"
         );
     }
     else {
@@ -26,17 +38,20 @@ function addToEmployee($col) {
         }
 
         DB::connection()->getPdo()->exec(
-            "ALTER TABLE employee_data ADD {$col["question"]} ENUM({$enum})"
+            "ALTER TABLE employee_data ADD `{$col["question"]}` ENUM({$enum})"
         );
     }
 }
 
 function addToStudent($col) {
-    $colName = str_replace(' ', '_', $col["question"]);
-
     if ($col["type"] == "text") {
         DB::connection()->getPdo()->exec(
-            "ALTER TABLE student_data ADD {$colName} varchar(255)"
+            "ALTER TABLE student_data ADD `{$col["question"]}` varchar(255)"
+        );
+    }
+    elseif ($col["type"] == "checkbox") {
+        DB::connection()->getPdo()->exec(
+            "ALTER TABLE student_data ADD `{$col["question"]}` json"
         );
     }
     else {
@@ -52,7 +67,7 @@ function addToStudent($col) {
         }
 
         DB::connection()->getPdo()->exec(
-            "ALTER TABLE student_data ADD {$col["question"]} ENUM({$enum})"
+            "ALTER TABLE student_data ADD `{$col["question"]}` ENUM({$enum})"
         );
     }
 }
@@ -64,10 +79,12 @@ class DataController extends Controller
         $data = $request->all();
 
         foreach ($data as $col) {
-            if ($col["applicableTo"] == "employee") {
+            addToAdministrator($col);
+
+            if ($col["applicable_to"] == "employee") {
                 addToEmployee($col);
             }
-            elseif ($col["applicableTo"] == "student") {
+            elseif ($col["applicable_to"] == "student") {
                 addToStudent($col);
             }
             else {
@@ -92,5 +109,29 @@ class DataController extends Controller
         return response()->json([
             'message' => 'Data received successfully!'
         ]);
+    }
+
+    public function sendCols()
+    {
+        $rows = DB::table('administrator')->get();
+
+        $cols = [];
+        foreach ($rows as $row) {
+            $col = [];
+            foreach ($row as $key => $value) {
+                if ($key == "options") {
+                    $options = json_decode($value);
+                    $col[$key] = $options;
+                }
+                else {
+                    $col[$key] = $value;
+                }
+            }
+            $cols[] = $col;
+        }
+
+        $jsonData = json_encode($cols);
+
+        return $jsonData;
     }
 }
