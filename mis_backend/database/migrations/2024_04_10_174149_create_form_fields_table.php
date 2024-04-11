@@ -12,7 +12,8 @@ return new class extends Migration
      * @return void
      */
     public function up()
-    {
+    {   
+        // Create the 'administrator' table with the required columns
         Schema::create('administrator', function (Blueprint $table) {
             $table->id();
             $table->string('question');
@@ -21,10 +22,12 @@ return new class extends Migration
             $table->enum('applicable_to', ['student', 'employee', 'both']);
         });
 
+        // Create an empty 'employee_data' table
         Schema::create('employee_data', function (Blueprint $table) {
             $table->id();
         });
 
+        // Create an empty 'student_data' table
         Schema::create('student_data', function (Blueprint $table) {
             $table->id();
         });

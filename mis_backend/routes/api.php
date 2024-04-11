@@ -15,8 +15,13 @@ use App\Http\Controllers\DataController;
 |
 */
 
+// Route to receive form skeleton data in the backend from the frontend
 Route::post('receiveCols', [DataController::class, 'receiveCols']);
+
+// Route to receive user form data in the backend from the frontend
 Route::post('receiveData', [DataController::class, 'receiveData']);
+
+// Route to send form skeleton data from the backend to the frontend
 Route::get('sendCols', [DataController::class, 'sendCols']);
 
 Route::fallback(function () {
