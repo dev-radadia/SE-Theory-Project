@@ -12,10 +12,20 @@ function addToAdministrator($col) {
     // Encode associative array into json object
     $options = json_encode($col["options"]);
 
-    // Connecting to database and executing the sql query
-    DB::connection()->getPdo()->exec(
-        "INSERT INTO administrator (question, type, options, applicable_to) VALUES (" . "'" . "{$col["question"]}" . "', '" . "{$col["type"]}" . "', '" . "{$options}" . "', '" . "{$col["applicable_to"]}" . "')"
-    );
+    // Try connecting to database and executing the sql query
+    try {
+        DB::connection()->getPdo()->exec(
+            "INSERT INTO administrator (question, type, options, applicable_to) VALUES (" . "'" . "{$col["question"]}" . "', '" . "{$col["type"]}" . "', '" . "{$options}" . "', '" . "{$col["applicable_to"]}" . "')"
+        );
+    }
+
+    // Will execute if the question in the form already exists
+    catch (\PDOException $e) {
+        echo "'" . "{$col["question"]}" . "' " . "question already exists in the form\n";
+        return 0;
+    }
+
+    return 1;
 }
 
 // Function to build the "employee_data" table
@@ -24,19 +34,33 @@ function addToEmployee($col) {
     // Check whether the field type is 'text' or not
     if ($col["type"] == "text") {
 
-        // Connecting to database and executing the sql query
-        DB::connection()->getPdo()->exec(
-            "ALTER TABLE employee_data ADD `{$col["question"]}` varchar(255)"
-        );
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE employee_data ADD `{$col["question"]}` varchar(255)"
+            );
+        }
+
+        // Will execute if the column already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'employee_data' table\n";
+        }
     }
 
     // Check whether the field type is 'checkbox' or not
     elseif ($col["type"] == "checkbox") {
 
-        // Connecting to database and executing the sql query
-        DB::connection()->getPdo()->exec(
-            "ALTER TABLE employee_data ADD `{$col["question"]}` json"
-        );
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE employee_data ADD `{$col["question"]}` json"
+            );
+        }
+
+        // Will execute if the column already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'employee_data' table\n";
+        }
     }
 
     // If the field type is other than 'text' and 'checckbox' i.e. 'radio'
@@ -59,10 +83,17 @@ function addToEmployee($col) {
             }
         }
 
-        // Connecting to database and executing the sql query
-        DB::connection()->getPdo()->exec(
-            "ALTER TABLE employee_data ADD `{$col["question"]}` ENUM({$enum_options})"
-        );
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE employee_data ADD `{$col["question"]}` ENUM({$enum_options})"
+            );
+        }
+
+        // Will execute if the column already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'employee_data' table\n";
+        }
     }
 }
 
@@ -72,19 +103,33 @@ function addToStudent($col) {
     // Check whether the field type is 'text' or not
     if ($col["type"] == "text") {
 
-        // Connecting to database and executing the sql query
-        DB::connection()->getPdo()->exec(
-            "ALTER TABLE student_data ADD `{$col["question"]}` varchar(255)"
-        );
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE student_data ADD `{$col["question"]}` varchar(255)"
+            );
+        }
+
+        // Will execute if the column already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'student_data' table\n";
+        }
     }
 
     // Check whether the field type is 'checkbox' or not
     elseif ($col["type"] == "checkbox") {
 
-        // Connecting to database and executing the sql query
-        DB::connection()->getPdo()->exec(
-            "ALTER TABLE student_data ADD `{$col["question"]}` json"
-        );
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE student_data ADD `{$col["question"]}` json"
+            );
+        }
+
+        // Will execute if the column already already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'student_data' table\n";
+        }
     }
 
     // If the field type is other than 'text' and 'checckbox' i.e. 'radio'
@@ -106,10 +151,17 @@ function addToStudent($col) {
             }
         }
 
-        // Connecting to database and executing the sql query
-        DB::connection()->getPdo()->exec(
-            "ALTER TABLE student_data ADD `{$col["question"]}` ENUM({$enum_options})"
-        );
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE student_data ADD `{$col["question"]}` ENUM({$enum_options})"
+            );
+        }
+
+        // Will execute if the column already already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'student_data' table\n";
+        }
     }
 }
 
@@ -124,8 +176,10 @@ class DataController extends Controller
         // Iterating through each element of the associative array
         foreach ($data as $col) {
 
-            // Calling the function to add data in the "administrator" table
-            addToAdministrator($col);
+            // Calling the function to add data in the "administrator" table and if the data already exists in the table then ending the iteration
+            if (!addToAdministrator($col)) {
+                continue;
+            }
 
             // Check whether the field is applicable to only 'employee'
             if ($col["applicable_to"] == "employee") {
