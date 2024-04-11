@@ -163,10 +163,6 @@ class DataController extends Controller
     {   
         // Convert the received json object into an associative array
         $data = $request->all();
-
-        // DB::connection()->getPdo()->exec(
-        // "INSERT INTO TABLE students_employees_data () VALUES ()"
-        // );
         
         // Respond if successfully received data from the frontend
         return response()->json([
