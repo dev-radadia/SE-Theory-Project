@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 // Function to add form skeleton data in the "administrator" table
 function addToAdministrator($col) {
 
-    // Encode associative array into json object
+    // Encode array into json object
     $options = json_encode($col["options"]);
 
     // Try connecting to database and executing the sql query
@@ -29,7 +29,7 @@ function addToAdministrator($col) {
 }
 
 // Function to build the "employee_data" table
-function addToEmployee($col) {
+function buildEmployee($col) {
 
     // Check whether the field type is 'text' or not
     if ($col["type"] == "text") {
@@ -72,7 +72,7 @@ function addToEmployee($col) {
         // Iterating through all the "options" present in json object
         for ($key = 0, $size = count($col["options"]); $key < $size; $key++) {
 
-            // Appending each option to the 'enum_options' variable
+            // Appending each option to the '$enum_options' variable
             $enum_options .= "'";
             $enum_options .= $col["options"][$key];
             $enum_options .= "'";
@@ -98,7 +98,7 @@ function addToEmployee($col) {
 }
 
 // Function to build the Student Data table
-function addToStudent($col) {
+function buildStudent($col) {
 
     // Check whether the field type is 'text' or not
     if ($col["type"] == "text") {
@@ -165,6 +165,24 @@ function addToStudent($col) {
     }
 }
 
+// Function to add user form data in the "employee_data" table
+function addToEmployee($cols, $vals) {
+
+    // Connecting to database and executing the sql query
+    DB::connection()->getPdo()->exec(
+        "INSERT INTO employee_data ({$cols}) VALUES ($vals)"
+    );
+}
+
+// Function to add user form data in the "student_data" table
+function addToStudent($cols, $vals) {
+    
+    // Connecting to database and executing the sql query
+    DB::connection()->getPdo()->exec(
+        "INSERT INTO student_data ({$cols}) VALUES ($vals)"
+    );
+}
+
 class DataController extends Controller
 {   
     // Function to receive form skeleton data from the frontend
@@ -173,11 +191,13 @@ class DataController extends Controller
         // Convert the received json object into an associative array
         $data = $request->all();
 
-        // Iterating through each element of the associative array
+        // Iterating through each element of the array
         foreach ($data as $col) {
 
             // Calling the function to add data in the "administrator" table and if the data already exists in the table then ending the iteration
             if (!addToAdministrator($col)) {
+
+                // Skipping to the next iteration
                 continue;
             }
 
@@ -185,24 +205,24 @@ class DataController extends Controller
             if ($col["applicable_to"] == "employee") {
 
                 // Calling the function to add a new column in the "employee_data" table
-                addToEmployee($col);
+                buildEmployee($col);
             }
 
             // Check whether the field is applicable to only 'student'
             elseif ($col["applicable_to"] == "student") {
 
                 // Calling the function to add a new column in the "student_data" table
-                addToStudent($col);
+                buildStudent($col);
             }
 
             // The field is applicable to both 'employee' and 'student'
             else {
 
                 // Calling the function to add a new column in the "employee_data" table
-                addToEmployee($col);
+                buildEmployee($col);
 
                 // Calling the function to add a new column in the "student_data" table
-                addToStudent($col);
+                buildStudent($col);
             }
         }
 
@@ -217,6 +237,86 @@ class DataController extends Controller
     {   
         // Convert the received json object into an associative array
         $data = $request->all();
+
+        // Declaring a boolean variable (will help in knowing whether the data received belongs to employee form or student form)
+        $employee = TRUE;
+
+        // Checking whether the data received belongs to student form
+        if($data[0]["applicable_to"] == "student") {
+            $employee = FALSE;
+        }
+
+        // Declaring an empty string variable to store all column names (form fields)
+        $cols = "";
+
+        // Declaring an empty string variable to store all data entries (form values)
+        $vals = "";
+
+        // Declaring a boolean variable to keep track of the first iteration of the array
+        $first = TRUE;
+
+        // Iterating through each element of the array
+        foreach ($data as $col) {
+
+            // Checking whether it is the first iteration or not
+            if ($first) {
+
+                // Unsetting the '$first' variable
+                $first = FALSE;
+
+                // Skipping to the next iteration
+                continue;
+            }
+
+            // Appending each field name to the '$cols' variable
+            $cols .= "`";
+            $cols .= $col["question"];
+            $cols .= "`";
+            $cols .= ", ";
+
+            // Check whether the field type is 'checkbox' or not
+            if($col["type"] == "checkbox") {
+
+                // Encode array into json object
+                $val = json_encode($col["response"]);
+
+                // Appending each field value to the '$vals' variable
+                $vals .= "'";
+                $vals .= $val;
+                $vals .= "'";
+                $vals .= ", ";
+            }
+
+            // If the field type is other than 'checkbox' i.e. 'text' or 'radio'
+            else {
+
+                // Appending each field value to the '$vals' variable
+                $vals .= "'";
+                $vals .= $col["response"];
+                $vals .= "'";
+                $vals .= ", ";
+            }
+        }
+
+        // Remove the last two extra characters ", " from the '$cols' variable
+        $cols = substr($cols, 0, -2);
+
+        // Remove the last two extra characters ", " from the '$vals' variable
+        $vals = substr($vals, 0, -2);
+
+        // Checking whether the data received belongs to the employee form or not
+        if ($employee) {
+
+            // Calling the function to add data in the "employee_data" table
+            addToEmployee($cols, $vals);
+        }
+
+        // If the data received belongs to the student form
+        else {
+
+            // Calling the function to add data in the "student_data" table
+            addToStudent($cols, $vals);
+        }
         
         // Respond if successfully received data from the frontend
         return response()->json([
@@ -251,7 +351,10 @@ class DataController extends Controller
                     // Appending the "column name - data entry" pair into the '$col' variable
                     $col[$key] = $options;
                 }
+
+                // If the column name is other than "options"
                 else {
+                    
                     // Appending the "column name - data entry" pair into the '$col' variable
                     $col[$key] = $value;
                 }
