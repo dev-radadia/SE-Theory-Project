@@ -15,11 +15,13 @@ return new class extends Migration
     {   
         // Create the 'administrator' table with the required columns
         Schema::create('administrator', function (Blueprint $table) {
-            $table->id();
-            $table->string('question')->unique();
+            $table->string('question');
             $table->enum('type', ['text', 'image', 'file', 'radio', 'checkbox']);
             $table->json('options')->nullable();
             $table->enum('applicable_to', ['student', 'employee', 'both']);
+
+            // Define the composite primary key in the same blueprint
+            $table->primary(['question', 'applicable_to']);
         });
 
         // Create an empty 'employee_data' table
