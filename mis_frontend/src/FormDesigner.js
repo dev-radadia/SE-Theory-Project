@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import FieldComponent from './FieldComponent'
 import DesignedForm from './DesignedForm'
 import './FormDesigner.css'
-import ViewDesignedFormButton from './ViewDesignedFormButton' // Import ViewDesignedFormButton
+import ViewDesignedFormButton from './ViewDesignedFormButton' 
 
 const FormDesigner = () => {
   const [fields, setFields] = useState([])
@@ -17,12 +17,35 @@ const FormDesigner = () => {
 
   const handleApplyChanges = async () => {
     try {
-      localStorage.setItem('formFields', JSON.stringify(fields))
-      setShowDesignedForm(true)
+      // Assuming `fields` is the data you want to send to the API
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fields)
+      };
+  
+      // Make the POST request to the API endpoint
+      // const response = await fetch('http://127.0.0.1:8000/api/receiveCols', requestOptions);
+  
+      // Check if the request was successful
+      // if (!response.ok) {
+      //   throw new Error('Failed to send data to the API');
+      // }
+  
+      // Optionally, you can handle the response from the API
+      // const responseData = await response.json();
+      // console.log('Response from API:', responseData);
+  
+      // Save to localStorage if needed
+      localStorage.setItem('formFields', JSON.stringify(fields));
+  
+      // Show designed form
+      setShowDesignedForm(true);
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error:', error);
     }
   }
+  
 
   const handleAddField = () => {
     const newField = {
@@ -161,3 +184,16 @@ const FormDesigner = () => {
 }
 
 export default FormDesigner
+
+
+// {
+//   "id": 0.00011172325515840242,
+//   "type": "checkbox",
+//   "question": "Level cleared",
+//   "options": [
+//       "lvl1",
+//       "lvl2",
+//       "lvl3"
+//   ],
+//   "applicableTo": "both"
+// }

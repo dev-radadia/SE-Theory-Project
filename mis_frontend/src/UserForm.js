@@ -12,15 +12,101 @@ const UserForm = () => {
     }
   }, [])
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch('http://127.0.0.1:8000/api/sendData');
+  //       if (!response.ok) {
+  //         throw new Error('Failed to fetch form data');
+  //       }
+  //       const data = await response.json();
+  //       setFormData(data);
+  //     } catch (error) {
+  //       console.error('Error fetching form data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
   const handleInputChange = (e, fieldId) => {
-    const updatedFormData = formData.map((field) => {
-      if (field.id === fieldId) {
-        return { ...field, answer: e.target.value }
+  
+    let updatedFormData;
+    const fieldToUpdate = formData.find((field) => field.id === fieldId);
+  
+    if (fieldToUpdate && fieldToUpdate.type === 'checkbox') {
+      const selectedOption = e.target.value;
+      const prevSelectedOptions = fieldToUpdate.response || []; 
+      let updatedSelectedOptions;
+  
+      if (e.target.checked) {
+        updatedSelectedOptions = [...prevSelectedOptions, selectedOption];
+      } else {
+        updatedSelectedOptions = prevSelectedOptions.filter((option) => option !== selectedOption);
       }
-      return field
-    })
-    setFormData(updatedFormData)
-  }
+  
+      updatedFormData = formData.map((field) => {
+        if (field.id === fieldId) {
+          return { ...field, response: updatedSelectedOptions };
+        }
+        return field;
+      });
+    } else {
+    
+      updatedFormData = formData.map((field) => {
+        if (field.id === fieldId) {
+          return { ...field, response: e.target.value };
+        }
+        return field;
+      });
+    }
+    //console.log("Updated form data:", updatedFormData); 
+    setFormData(updatedFormData);
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior  
+   // console.log("Original formData:", formData); // Log original formData
+
+    // Filter formData based on userType
+    const filteredFormData = formData.filter((field) => {
+      return field.applicableTo === userType || field.applicableTo === 'both';
+      
+    }).filter(Boolean);
+  
+    //console.log("Filtered formData:", filteredFormData); // Log filtered formData
+  
+    // Remove the applicable_to field from each question
+    const updatedFormData = filteredFormData.map((field) => {
+      const { applicableTo, ...rest } = field;
+      return rest;
+    }).filter(Boolean);
+  
+    // Add applicable_to field to the beginning of the updatedFormData 
+    updatedFormData.unshift({applicable_to:userType});
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/receiveData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedFormData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log('Form data submitted successfully:', data);
+    } catch (error) {
+      console.error('There was a problem submitting the form data:', error.message);
+    }
+  };
+  
+  
+  
 
   const filteredFields = formData.filter((field) => {
     if (userType === 'student' || userType === 'employee') {
@@ -55,7 +141,7 @@ const UserForm = () => {
         </label>
       </div>
       {filteredFields.length > 0 ? (
-        <form className="form-table">
+        <form className="form-table" onSubmit={handleSubmit}>
           <table>
             <thead>
               <tr>
@@ -144,3 +230,43 @@ const UserForm = () => {
 }
 
 export default UserForm
+
+
+// [
+//   {
+//       "id": 0.36036302852212887,
+//       "type": "text",
+//       "question": "Name",
+//       "options": [],
+//       "applicableTo": "student"
+//   },
+//   {
+//       "id": 0.5499655378250259,
+//       "type": "image",
+//       "question": "Photo",
+//       "options": [],
+//       "applicableTo": "employee"
+//   },
+//   {
+//       "id": 0.7463503403613634,
+//       "type": "radio",
+//       "question": "graduation year",
+//       "options": [
+//           "2024",
+//           "2025",
+//           "2026"
+//       ],
+//       "applicableTo": "student"
+//   },
+//   {
+//       "id": 0.00011172325515840242,
+//       "type": "checkbox",
+//       "question": "Level cleared",
+//       "options": [
+//           "lvl1",
+//           "lvl2",
+//           "lvl3"
+//       ],
+//       "applicableTo": "both"
+//   }
+// ]
