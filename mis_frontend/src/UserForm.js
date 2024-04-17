@@ -5,29 +5,29 @@ const UserForm = () => {
   const [formData, setFormData] = useState([])
   const [userType, setUserType] = useState('student')
 
-  useEffect(() => {
-    const savedFormData = JSON.parse(localStorage.getItem('formFields'))
-    if (savedFormData) {
-      setFormData(savedFormData)
-    }
-  }, [])
-
   // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch('http://127.0.0.1:8000/api/sendData');
-  //       if (!response.ok) {
-  //         throw new Error('Failed to fetch form data');
-  //       }
-  //       const data = await response.json();
-  //       setFormData(data);
-  //     } catch (error) {
-  //       console.error('Error fetching form data:', error);
-  //     }
-  //   };
+  //   const savedFormData = JSON.parse(localStorage.getItem('formFields'))
+  //   if (savedFormData) {
+  //     setFormData(savedFormData)
+  //   }
+  // }, [])
 
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/sendCols');
+        if (!response.ok) {
+          throw new Error('Failed to fetch form data');
+        }
+        const data = await response.json();
+        setFormData(data);
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleInputChange = (e, fieldId) => {
   
@@ -108,12 +108,19 @@ const UserForm = () => {
   
   
 
-  const filteredFields = formData.filter((field) => {
-    if (userType === 'student' || userType === 'employee') {
-      return field.applicableTo === userType || field.applicableTo === 'both'
-    }
-    return true
-  })
+// Convert formData to an array of values
+const formDataArray = Object.values(formData);
+
+// Filter the array
+const filteredFields = formDataArray.filter((field) => {
+  if (userType === 'student' || userType === 'employee') {
+    return field.applicable_to === userType || field.applicable_to === 'both';
+  }
+  return true;
+});
+
+  
+  
 
   return (
     <div className="user-form-container">

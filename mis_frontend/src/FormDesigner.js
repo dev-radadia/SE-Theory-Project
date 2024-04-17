@@ -25,20 +25,20 @@ const FormDesigner = () => {
       };
   
       // Make the POST request to the API endpoint
-      // const response = await fetch('http://127.0.0.1:8000/api/receiveCols', requestOptions);
+       const response = await fetch('http://127.0.0.1:8000/api/receiveCols', requestOptions);
   
-      // Check if the request was successful
-      // if (!response.ok) {
-      //   throw new Error('Failed to send data to the API');
-      // }
-  
+      //Check if the request was successful
+       if (!response.ok) {
+        throw new Error('Failed to send data to the API');
+       }
+       
       // Optionally, you can handle the response from the API
-      // const responseData = await response.json();
-      // console.log('Response from API:', responseData);
+       const responseData = await response.json();
+       console.log('Response from API:', responseData);
   
       // Save to localStorage if needed
-      localStorage.setItem('formFields', JSON.stringify(fields));
-  
+       //localStorage.setItem('formFields', JSON.stringify(fields));
+      //console.log(fields);
       // Show designed form
       setShowDesignedForm(true);
     } catch (error) {
@@ -56,7 +56,7 @@ const FormDesigner = () => {
         newFieldType === 'radio' || newFieldType === 'checkbox'
           ? additionalOptions.split(',').map((option) => option.trim())
           : [],
-      applicableTo: newApplicableTo,
+      applicable_to: newApplicableTo,
     }
     setFields([...fields, newField])
   }
@@ -197,3 +197,8 @@ export default FormDesigner
 //   ],
 //   "applicableTo": "both"
 // }
+
+
+
+
+
