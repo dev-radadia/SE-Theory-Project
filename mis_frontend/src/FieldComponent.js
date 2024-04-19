@@ -18,7 +18,7 @@ const FieldComponent = ({ field, onDelete }) => {
           )}
           <p className="mb-2">
             <strong className="text-indigo-600">Applicable To:</strong>{' '}
-            {field.applicableTo}
+            {field.applicable_to}
           </p>
         </div>
         <div>
