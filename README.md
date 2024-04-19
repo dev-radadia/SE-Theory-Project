@@ -4,14 +4,14 @@ Rename `mis_backend/.env.example` file to `mis_backend/.env` and set the `DB_PAS
 
 ## Backend
 
-1. Run ``` composer update ```
+1. Run ` composer update `
 
-2. Run ``` php artisan migrate ```
+2. Run ` php artisan migrate `
 
-3. Run ``` php artisan serve ```
+3. Run ` php artisan serve `
 
 ## Frontend
 
-1. Run ``` npm i ``` (Node modules are not present)
+1. Run ` npm i ` (Node modules are not present)
 
-2. Run ``` npm start ```
+2. Run ` npm start `
