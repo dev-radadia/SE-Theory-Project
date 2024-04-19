@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 // Function to add form skeleton data in the "administrator" table
 function addToAdministrator($col) {
 
-    // Encode array into json object
+    // Encode array into json string
     $options = json_encode($col["options"]);
 
     // Try connecting to database and executing the sql query
@@ -63,8 +63,8 @@ function buildEmployee($col) {
         }
     }
 
-    // If the field type is other than 'text' and 'checckbox' i.e. 'radio'
-    else {
+    // Check whether the field type is 'radio' or not
+    elseif ($col["type"] == "radio") {
 
         // Declaring an empty string variable to store all the options
         $enum_options = "";
@@ -87,6 +87,22 @@ function buildEmployee($col) {
         try {
             DB::connection()->getPdo()->exec(
                 "ALTER TABLE employee_data ADD `{$col["question"]}` ENUM({$enum_options})"
+            );
+        }
+
+        // Will execute if the column already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'employee_data' table\n";
+        }
+    }
+
+    // If the field type is other than 'text', 'checkbox', 'radio' i.e. 'image' or 'file'
+    else {
+        
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE employee_data ADD `{$col["question"]}` longblob"
             );
         }
 
@@ -132,8 +148,9 @@ function buildStudent($col) {
         }
     }
 
-    // If the field type is other than 'text' and 'checckbox' i.e. 'radio'
-    else {
+    // Check whether the field type is 'radio' or not
+    elseif (($col["type"] == "radio")) {
+
         // Declaring an empty string variable which will be later used to execute the sql query
         $enum_options = "";
 
@@ -159,6 +176,22 @@ function buildStudent($col) {
         }
 
         // Will execute if the column already already exists
+        catch (\PDOException $e) {
+            echo "'" . "{$col["question"]}" . "' " . "column already exists in 'student_data' table\n";
+        }
+    }
+
+    // If the field type is other than 'text', 'checkbox', 'radio' i.e. 'image' or 'file'
+    else {
+        
+        // Try connecting to database and executing the sql query
+        try {
+            DB::connection()->getPdo()->exec(
+                "ALTER TABLE student_data ADD `{$col["question"]}` longblob"
+            );
+        }
+
+        // Will execute if the column already exists
         catch (\PDOException $e) {
             echo "'" . "{$col["question"]}" . "' " . "column already exists in 'student_data' table\n";
         }
@@ -277,7 +310,7 @@ class DataController extends Controller
             // Check whether the field type is 'checkbox' or not
             if($col["type"] == "checkbox") {
 
-                // Encode array into json object
+                // Encode array into json string
                 $val = json_encode($col["response"]);
 
                 // Appending each field value to the '$vals' variable
@@ -287,7 +320,33 @@ class DataController extends Controller
                 $vals .= ", ";
             }
 
-            // If the field type is other than 'checkbox' i.e. 'text' or 'radio'
+            // Check whether the field type is 'image' or not
+            elseif($col["type"] == "image") {
+
+                // Creating a variable to store the Base64 Decoding of the received image
+                $image = base64_decode($col["response"]);
+
+                // Appending each field value to the '$vals' variable
+                $vals .= "'";
+                $vals .= $image;
+                $vals .= "'";
+                $vals .= ", ";
+            }
+
+            // Check whether the field type is 'file' or not
+            elseif($col["type"] == "file") {
+
+                // Creating a variable to store the Base64 Decoding of the received file
+                $file = base64_decode($col["response"]);
+
+                // Appending each field value to the '$vals' variable
+                $vals .= "'";
+                $vals .= $file;
+                $vals .= "'";
+                $vals .= ", ";
+            }
+
+            // If the field type is other than 'checkbox' and 'image' i.e. 'text' or 'radio'
             else {
 
                 // Appending each field value to the '$vals' variable

@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import './UserForm.css'
 
+// function convertFileToBase64(file) {
+//   return new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result);
+//     reader.onerror = error => reject(error);
+//   });
+// }
+
 const UserForm = () => {
   const [formData, setFormData] = useState([])
   const [userType, setUserType] = useState('student')
@@ -32,7 +41,7 @@ const UserForm = () => {
   const handleInputChange = (e, fieldId) => {
   
     let updatedFormData;
-    const fieldToUpdate = formData.find((field) => field.id === fieldId);
+    const fieldToUpdate = formData.find((field) => field.question === fieldId);
   
     if (fieldToUpdate && fieldToUpdate.type === 'checkbox') {
       const selectedOption = e.target.value;
@@ -46,15 +55,63 @@ const UserForm = () => {
       }
   
       updatedFormData = formData.map((field) => {
-        if (field.id === fieldId) {
+        if (field.question === fieldId) {
           return { ...field, response: updatedSelectedOptions };
         }
         return field;
       });
-    } else {
+    }
+
+    else if (fieldToUpdate && fieldToUpdate.type === 'image') {
+      // const file = e.target.files[0];
+      // const reader = new FileReader();
+      // reader.readAsDataURL(file);
+
+      // reader.onload = () => {
+      //   updatedFormData = formData.map((field) => {
+      //     if (field.question === fieldId) {
+      //       console.log(reader.result);
+      //       return { ...field, response: reader.result };
+      //     }
+      //     return field;
+      //   });
+      // };
+
+      updatedFormData = formData.map((field) => {
+        if (field.question === fieldId) {
+          return { ...field, response: "image" };
+        }
+        return field;
+      });
+    }
+
+    else if (fieldToUpdate && fieldToUpdate.type === 'file') {
+      // const file = e.target.files[0];
+      // const reader = new FileReader();
+      // reader.readAsDataURL(file);
+
+      // reader.onload = () => {
+      //   updatedFormData = formData.map((field) => {
+      //     if (field.question === fieldId) {
+      //       console.log(reader.result);
+      //       return { ...field, response: reader.result };
+      //     }
+      //     return field;
+      //   });
+      // };
+
+      updatedFormData = formData.map((field) => {
+        if (field.question === fieldId) {
+          return { ...field, response: "file" };
+        }
+        return field;
+      });
+    }
+    
+    else {
     
       updatedFormData = formData.map((field) => {
-        if (field.id === fieldId) {
+        if (field.question === fieldId) {
           return { ...field, response: e.target.value };
         }
         return field;
@@ -71,7 +128,7 @@ const UserForm = () => {
 
     // Filter formData based on userType
     const filteredFormData = formData.filter((field) => {
-      return field.applicableTo === userType || field.applicableTo === 'both';
+      return field.applicable_to === userType || field.applicable_to === 'both';
       
     }).filter(Boolean);
   
@@ -165,7 +222,7 @@ const filteredFields = formDataArray.filter((field) => {
                       <input
                         type="text"
                         className="input-field"
-                        onChange={(e) => handleInputChange(e, field.id)}
+                        onChange={(e) => handleInputChange(e, field.question)}
                       />
                     )}
                     {field.type === 'image' && (
@@ -173,14 +230,14 @@ const filteredFields = formDataArray.filter((field) => {
                         type="file"
                         accept="image/*"
                         className="input-field"
-                        onChange={(e) => handleInputChange(e, field.id)}
+                        onChange={(e) => handleInputChange(e, field.question)}
                       />
                     )}
                     {field.type === 'file' && (
                       <input
                         type="file"
                         className="input-field"
-                        onChange={(e) => handleInputChange(e, field.id)}
+                        onChange={(e) => handleInputChange(e, field.question)}
                       />
                     )}
                     {field.type === 'radio' && (
@@ -192,7 +249,7 @@ const filteredFields = formDataArray.filter((field) => {
                               id={option}
                               name={field.id}
                               value={option}
-                              onChange={(e) => handleInputChange(e, field.id)}
+                              onChange={(e) => handleInputChange(e, field.question)}
                             />
                             <label htmlFor={option}>{option}</label>
                           </div>
@@ -208,7 +265,7 @@ const filteredFields = formDataArray.filter((field) => {
                               id={option}
                               name={field.id}
                               value={option}
-                              onChange={(e) => handleInputChange(e, field.id)}
+                              onChange={(e) => handleInputChange(e, field.question)}
                             />
                             <label htmlFor={option}>{option}</label>
                           </div>
