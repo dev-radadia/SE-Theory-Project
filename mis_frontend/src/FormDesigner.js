@@ -45,6 +45,21 @@ const FormDesigner = () => {
       console.error('Error:', error);
     }
   }
+
+
+  // const handleApplyChanges = () => {
+  //   try {
+  //     // Save fields data to local storage
+  //     localStorage.setItem('formFields', JSON.stringify(fields));
+  //     console.log('Form fields saved to local storage:', fields);
+  
+  //     // Show designed form
+  //     setShowDesignedForm(true);
+  //   } catch (error) {
+  //     console.error('Error saving form fields to local storage:', error);
+  //   }
+  // };
+  
   
 
   const handleAddField = () => {
@@ -59,7 +74,9 @@ const FormDesigner = () => {
       applicable_to: newApplicableTo,
     }
     setFields([...fields, newField])
-  }
+  } 
+  
+  
 
   const handleDeleteField = (id) => {
     const updatedFields = fields.filter((field) => field.id !== id)
@@ -69,6 +86,7 @@ const FormDesigner = () => {
   const handleAdditionalOptionsChange = (e) => {
     setAdditionalOptions(e.target.value)
   }
+
 
   return (
     <div className="main-container bg-gray-50 min-h-screen flex flex-col">
@@ -97,6 +115,7 @@ const FormDesigner = () => {
                   <option value="file">File Upload</option>
                   <option value="radio">Radio Button</option>
                   <option value="checkbox">Checkbox</option>
+                  <option value="date">Date</option>
                 </select>
               </div>
               <div className="input-group mb-4">
@@ -123,6 +142,8 @@ const FormDesigner = () => {
                   ></textarea>
                 </div>
               )}
+
+              
               <div className="input-group mb-3">
                 <label
                   className="input-group-text"
