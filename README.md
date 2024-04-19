@@ -1,6 +1,6 @@
 # MIS Form Builder
 
-## Backend:
+## Backend
 
 First run ``` composer update ```
 
@@ -8,7 +8,7 @@ Then run ``` php artisan migrate ```
 
 Then run ``` php artisan serve ```
 
-## Frontend:
+## Frontend
 
 (Node modules are not present in Frontend folder)
 
