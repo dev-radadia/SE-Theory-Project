@@ -1,5 +1,7 @@
 # MIS Form Builder
 
+Rename "mis_backend/.env.example" file to "mis_backend/.env" and set the 'DB_PASSWORD' variable to your local MySQL server password
+
 ## Backend
 
 1. Run ``` composer update ```
