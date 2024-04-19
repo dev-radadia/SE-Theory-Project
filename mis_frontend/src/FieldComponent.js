@@ -10,7 +10,7 @@ const FieldComponent = ({ field, onDelete }) => {
             <strong className="text-indigo-600">Question:</strong>{' '}
             {field.question}
           </p>
-          {field.type !== 'text' && (
+          {field.type != 'date' && field.type !== 'text' && (
             <p className="mb-2">
               <strong className="text-indigo-600">Options:</strong>{' '}
               {field.options.join(', ')}
