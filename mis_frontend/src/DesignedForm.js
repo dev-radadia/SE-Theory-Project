@@ -78,6 +78,13 @@ const DesignedForm = ({ fields }) => {
                 ))}
               </div>
             )}
+            {field.type === 'date' && (
+              <input
+                type="date"
+                id={field.id}
+                className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            )}
           </div>
         ))}
         <button
