@@ -2,16 +2,14 @@
 
 ## Backend
 
-First run ``` composer update ```
+1. Run ``` composer update ```
 
-Then run ``` php artisan migrate ```
+2. Run ``` php artisan migrate ```
 
-Then run ``` php artisan serve ```
+3. Run ``` php artisan serve ```
 
 ## Frontend
 
-(Node modules are not present in Frontend folder)
+1. Run ``` npm i ``` (Node modules are not present)
 
-First run ``` npm i ```
-
-Then run ``` npm start ```
+2. Run ``` npm start ```
